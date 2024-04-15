@@ -11,9 +11,9 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://127.0.0.1:5500',  // Specify the origin of your frontend
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Optional: specify methods
-    allowedHeaders: 'Content-Type, Accept',  // Optional: specify headers
+    origin: process.env.FRONTEND_URL,  //especifica Origen del frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Metodos
+    allowedHeaders: 'Content-Type, Accept',  // Headers
   });
 
   //Swagger doc
