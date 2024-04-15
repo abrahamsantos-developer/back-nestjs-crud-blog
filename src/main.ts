@@ -1,19 +1,5 @@
 // //asegura que .env se cargue
 // //siempre poner al principio
-// import * as dotenv from 'dotenv';
-// dotenv.config(); 
-
-// //import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-// import { NestFactory } from '@nestjs/core';
-// import { AppModule } from './app.module';
-// import { ValidationPipe } from '@nestjs/common';
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-//   await app.listen(3000);
-// }
-
-// bootstrap();
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -24,8 +10,13 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://127.0.0.1:5500',  // Specify the origin of your frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Optional: specify methods
+    allowedHeaders: 'Content-Type, Accept',  // Optional: specify headers
+  });
 
-  // Set up Swagger documentation
+  //Swagger doc
   const config = new DocumentBuilder()
     .setTitle('Posts API')
     .setDescription('API for managing blog posts')

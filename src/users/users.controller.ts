@@ -6,7 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
+  //Mas adelante se implementara ete post con un login y signup
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
@@ -17,12 +17,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  // Assuming the ID is the actual primary key and is an appropriate identifier
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
+  // se implementara mas adelante(email, password)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);

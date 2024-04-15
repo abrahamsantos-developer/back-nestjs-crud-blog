@@ -16,11 +16,12 @@ export class User {
   @Column({ unique: true })
   username: string;
 
-  @Column()
-  email: string;
+  //Para implementar mas adelante, con auth, login, etc...
+  // @Column()
+  // email: string;
 
-  @Column()
-  password: string;
+  // @Column()
+  // password: string;
 
   @CreateDateColumn()
   createdAt: Date;

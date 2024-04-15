@@ -10,10 +10,15 @@ export class PostsService {
   getAllPosts() {
     return this.postsRepository.findAllPosts();
   }
+  
+  //se implementara despues
+  // getPostsByAuthorId(authorId: string) {
+  //   return this.postsRepository.findPostsByAuthorId(authorId);
+  // }
 
-  getPostsByAuthor(authorId: string) {
-    return this.postsRepository.findPostsByAuthor(authorId);
-  }
+  getPostsByAuthor(username: string) {
+    return this.postsRepository.findPostsByAuthor(username);
+}
 
   getPostsByTitle(title: string) {
     return this.postsRepository.findPostsByTitle(title);

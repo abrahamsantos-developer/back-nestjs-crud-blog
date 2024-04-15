@@ -1,27 +1,44 @@
 //se encarga de la DB
-//implementamos el repository como un servicio. 
+//implementamos el repository como un servicio.
 //metodo anterior deprecado
+
 import { Repository, Like } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class PostsRepository {
   constructor(
     @InjectRepository(Post)
     private readonly postsRepository: Repository<Post>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async findAllPosts(): Promise<Post[]> {
     return this.postsRepository.find();
   }
 
-  async findPostsByAuthor(authorId: string): Promise<Post[]> {
-    return this.postsRepository.find({ where: { author: { id: authorId } } });
-  }
+  //se implememntara luego
+  // async findPostsByAuthorId(authorId: string): Promise<Post[]> {
+  //   return this.postsRepository.find({ where: { author: { id: authorId } } });
+  // }
+
+// async findPostsByAuthor(username: string): Promise<Post[]> {
+//   return this.postsRepository.find({
+//       where: { author: { username: username } },
+//       relations: ["author"]  
+//   });
+// }
+
+//esto debe refactorarse. username debe ser author y usernamme se quedara en tabla users.
+async findPostsByAuthor(username: string): Promise<Post[]> {
+  return this.postsRepository.find({ where: { username } });
+}
 
   async findPostsByTitle(title: string): Promise<Post[]> {
     return this.postsRepository.find({ where: { title: title } });
@@ -29,7 +46,7 @@ export class PostsRepository {
 
   async findPostsByContent(contentKeywords: string): Promise<Post[]> {
     return this.postsRepository.find({
-      where: { content: Like(`%${contentKeywords}%`) } 
+      where: { content: Like(`%${contentKeywords}%`) },
     });
   }
 
@@ -40,12 +57,49 @@ export class PostsRepository {
     }
     return post;
   }
+  // esto guardaba el username en la tabla user.
+  // async createPost(createPostDto: CreatePostDto): Promise<Post> {
+  //   const { username, title, content } = createPostDto;
+
+  //   let user = await this.usersRepository.findOne({ where: { username } });
+  //   if (!user) {
+  //     user = this.usersRepository.create({ username });
+  //     await this.usersRepository.save(user);
+  //   }
+
+  //   const newPost = this.postsRepository.create({
+  //     title,
+  //     content,
+  //     author: user,
+  //   });
+  //   await this.postsRepository.save(newPost);
+  //   return newPost;
+  // }
 
   async createPost(createPostDto: CreatePostDto): Promise<Post> {
-    const post = this.postsRepository.create(createPostDto);
-    await this.postsRepository.save(post);
-    return post;
-  }
+    const { username, title, content } = createPostDto;
+
+    // Verifica si el usuario ya existe
+    let user = await this.usersRepository.findOne({ where: { username } });
+    if (!user) {
+        // Si no existe, crea un nuevo usuario
+        user = this.usersRepository.create({ username });
+        await this.usersRepository.save(user);
+    }
+
+    // Crea el post con el username directamente en el post
+    const newPost = this.postsRepository.create({
+        title,
+        content,
+        username, 
+        author: user 
+    });
+
+    await this.postsRepository.save(newPost);
+    return newPost;
+}
+
+  
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
     const post = await this.getPostById(id);

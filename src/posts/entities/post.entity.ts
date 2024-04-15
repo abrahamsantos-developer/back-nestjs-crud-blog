@@ -21,6 +21,10 @@ export class Post {
   @Column('text')
   content: string;
 
+  //esto se va a normalizar aun
+  @Column({nullable: true})  
+  username: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

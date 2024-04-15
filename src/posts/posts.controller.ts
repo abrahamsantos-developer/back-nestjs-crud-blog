@@ -13,11 +13,17 @@ export class PostsController {
   getAllPosts() {
     return this.postsService.getAllPosts();
   }
+  //puede ser implementado mas adelate, con auth y demas
+  // @Get('author/:authorId')
+  // getPostsByAuthorId(@Param('authorId') authorId: string) {
+  //   return this.postsService.getPostsByAuthorId(authorId);
+  // }
 
-  @Get('author/:authorId')
-  getPostsByAuthor(@Param('authorId') authorId: string) {
-    return this.postsService.getPostsByAuthor(authorId);
-  }
+@Get('author/:username')  
+getPostsByAuthor(@Param('username') username: string) {
+    return this.postsService.getPostsByAuthor(username);
+}
+
 
   @Get('title/:title')
   getPostsByTitle(@Param('title') title: string) {
