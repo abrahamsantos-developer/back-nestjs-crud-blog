@@ -1,63 +1,82 @@
-Backend for NestJS CRUD Blog (Abraham Santos Torres)
-Este proyecto es el backend de una aplicación de blog que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) desde la perspectiva de un administrador o superusuario.
+Frontend for NestJS CRUD Blog (Abraham Santos Torres)
+Este proyecto es el frontend de una aplicación de blog que, junto con su backend correspondiente, permite realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) desde la perspectiva de un administrador o superusuario.
 
-Tecnologías Utilizadas
-Node.js
-NestJS
-TypeORM
-PostgreSQL
+Tecnologías Utilizadas:
+HTML
+CSS
+JavaScript
+Bootstrap para el diseño
+Node.js y Express para el servidor de proxy
+
 
 Requisitos Previos
-Antes de iniciar, asegúrate de tener instalado Node.js, que incluye npm, y PostgreSQL en tu sistema.
+Antes de iniciar, asegúrate de tener instalado Node.js (que incluye npm) en tu sistema. También necesitas tener el backend corriendo para que el frontend funcione correctamente.
 
 Configuración del Proyecto
 Clonar el Repositorio
-Para obtener el proyecto, clona el repositorio desde GitHub.
-git clone https://github.com/abrahamsantos-developer/back-nestjs-crud-blog.git
-cd back-nestjs-crud-blog
+Para obtener el proyecto, clona el repositorio desde GitHub:
+
+git clone https://github.com/abrahamsantos-developer/front-nestjs-crud-blog.git
+cd front-nestjs-crud-blog
+
 
 Instalación de Dependencias
 Instala las dependencias necesarias ejecutando:
+
 npm install
 
 
-Configuración de la Base de Datos
-Deberás crear una base de datos PostgreSQL antes de iniciar la aplicación y asegurarte de que las credenciales de conexión coincidan con las configuradas en tu archivo .env.
+Configuración del Servidor de Proxy
+El servidor de proxy está configurado para redirigir las solicitudes a la API del backend. Aquí está cómo está configurado en server.js:
 
-Ejemplo de configuración de la base de datos:
+//server.js
+import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-DB_HOST: localhost (mantén este valor)
-DB_PORT: 5432 (verifica este puerto según tu configuración de PostgreSQL)
-DB_USERNAME: example_user (cambia esto por tu usuario de PostgreSQL)
-DB_PASSWORD: example_password (cambia esto por tu contraseña de PostgreSQL)
-DB_DATABASE: example_db (asegúrate de crear esta base de datos antes de iniciar la aplicación)
+const app = express();
+const port = 3000;
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+app.use('/api', createProxyMiddleware({
+    target: 'http://localhost:5500', // Apunta al backend de NestJS
+    changeOrigin: true,
+    pathRewrite: { '^/api': '' },
+}));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Proxy server running on http://localhost:${port}`);
+});
 
 
-Archivo .env
-Copia el archivo dotenv.example a un nuevo archivo llamado .env y actualiza las variables según tu entorno local:
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=example_user
-DB_PASSWORD=example_password
-DB_DATABASE=example_db
-PORT=3000
-FRONTEND_URL='http://localhost:5500'
 
 Ejecutar la Aplicación
-Para iniciar la aplicación en modo de desarrollo, usa:
-npm run start:dev
+Para iniciar el servidor de proxy y el frontend, usa:
+
+npm start
+
+Asegúrate de tener el Backend ejecutándose en http://localhost:5500 antes de iniciar el frontend.
+
+El frontend estará accesible en: URL del Frontend: http://localhost:3000
 
 Características
-CRUD Completo: Crea, lee, actualiza y elimina posts.
+CRUD Completo: Interfaz para crear, leer, actualizar y eliminar posts.
 Búsqueda Avanzada: Filtra posts por autor, título o contenido.
+
 
 Futuras Mejoras
 Mejorar la interfaz a un diseño más avanzado.
-
 Implementar autenticación con JWT.
-Establecer propietarios(users) de posts para definir permisos de edición y borrado.
+Establecer propietarios (usuarios) de posts para definir permisos de edición y borrado.
+
 
 Contribuciones
 Las contribuciones son bienvenidas. Si tienes mejoras o correcciones, por favor considera enviar un pull request.
-
