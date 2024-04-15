@@ -73,6 +73,7 @@ Búsqueda Avanzada: Filtra posts por autor, título o contenido.
 
 
 Futuras Mejoras
+Implementacion de ValidationPipes.
 Mejorar la interfaz a un diseño más avanzado.
 Implementar autenticación con JWT.
 Establecer propietarios (usuarios) de posts para definir permisos de edición y borrado.
