@@ -2,7 +2,7 @@
 //implementamos el repository como un servicio.
 //metodo anterior deprecado
 
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, ILike } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -37,18 +37,24 @@ export class PostsRepository {
 
 //esto debe refactorarse. username debe ser author y usernamme se quedara en tabla users.
 async findPostsByAuthor(username: string): Promise<Post[]> {
-  return this.postsRepository.find({ where: { username } });
+  // insensible a mayúsculas/minúsculas para 'username'
+  return this.postsRepository.find({
+    where: { username: ILike(`%${username}%`) }
+  });
+}
+  async findPostsByTitle(title: string): Promise<Post[]> {
+    //insensible a mayúsculas/minúsculas para 'title'
+  return this.postsRepository.find({
+    where: { title: ILike(`%${title}%`) }
+  });
 }
 
-  async findPostsByTitle(title: string): Promise<Post[]> {
-    return this.postsRepository.find({ where: { title: title } });
-  }
-
   async findPostsByContent(contentKeywords: string): Promise<Post[]> {
-    return this.postsRepository.find({
-      where: { content: Like(`%${contentKeywords}%`) },
-    });
-  }
+    //insensible a mayúsculas/minúsculas en 'content' que incluya las palabras clave en cualquier parte
+  return this.postsRepository.find({
+    where: { content: ILike(`%${contentKeywords}%`) }
+  });
+}
 
   async getPostById(id: string): Promise<Post> {
     const post = await this.postsRepository.findOneBy({ id });
@@ -57,25 +63,7 @@ async findPostsByAuthor(username: string): Promise<Post[]> {
     }
     return post;
   }
-  // esto guardaba el username en la tabla user.
-  // async createPost(createPostDto: CreatePostDto): Promise<Post> {
-  //   const { username, title, content } = createPostDto;
-
-  //   let user = await this.usersRepository.findOne({ where: { username } });
-  //   if (!user) {
-  //     user = this.usersRepository.create({ username });
-  //     await this.usersRepository.save(user);
-  //   }
-
-  //   const newPost = this.postsRepository.create({
-  //     title,
-  //     content,
-  //     author: user,
-  //   });
-  //   await this.postsRepository.save(newPost);
-  //   return newPost;
-  // }
-
+ 
   async createPost(createPostDto: CreatePostDto): Promise<Post> {
     const { username, title, content } = createPostDto;
   
