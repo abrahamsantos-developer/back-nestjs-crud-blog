@@ -1,5 +1,4 @@
-// //asegura que .env se cargue
-// //siempre poner al principio
+
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -26,7 +25,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(5500);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 
