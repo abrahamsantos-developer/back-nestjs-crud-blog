@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
+import { Controller, Get, Post, Put, Delete, Param, Body, UsePipes, ValidationPipe } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
-  @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
+  @Get()
+  getAllPosts() {
+    return this.postsService.getAllPosts();
   }
 
-  @Get()
-  findAll() {
-    return this.postsService.findAll();
+  @Get('author/:authorId')
+  getPostsByAuthor(@Param('authorId') authorId: string) {
+    return this.postsService.getPostsByAuthor(authorId);
+  }
+
+  @Get('title/:title')
+  getPostsByTitle(@Param('title') title: string) {
+    return this.postsService.getPostsByTitle(title);
+  }
+
+  @Get('content/:content')
+  getPostsByContent(@Param('content') content: string) {
+    return this.postsService.getPostsByContent(content);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postsService.findOne(+id);
+  getPostById(@Param('id') id: string) {
+    return this.postsService.getPostById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  @Post()
+  //@UsePipes(new ValidationPipe({ transform: true }))
+  createPost(@Body() createPostDto: CreatePostDto) {
+    return this.postsService.createPost(createPostDto);
+  }
+
+  @Put(':id')
+  //@UsePipes(new ValidationPipe({ transform: true }))
+  updatePost(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+    return this.postsService.updatePost(id, updatePostDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postsService.remove(+id);
+  deletePost(@Param('id') id: string) {
+    return this.postsService.deletePost(id);
   }
 }

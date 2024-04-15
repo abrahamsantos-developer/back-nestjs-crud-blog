@@ -1,26 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PostsRepository } from './posts.repository';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+//import { InjectRepository } from '@nestjs/typeorm';
+// import { Repository } from 'typeorm';
+// import { Post } from './entities/post.entity';
+
 
 @Injectable()
 export class PostsService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(private /*readonly*/ postsRepository: PostsRepository) {}
+
+  getAllPosts() {
+    return this.postsRepository.findAllPosts();
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  getPostsByAuthor(authorId: string) {
+    return this.postsRepository.findPostsByAuthor(authorId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  getPostsByTitle(title: string) {
+    return this.postsRepository.findPostsByTitle(title);
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  getPostsByContent(content: string) {
+    return this.postsRepository.findPostsByContent(content);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  getPostById(id: string) {
+    return this.postsRepository.getPostById(id);
+  }
+
+  createPost(createPostDto: CreatePostDto) {
+    return this.postsRepository.createPost(createPostDto);
+  }
+
+  updatePost(id: string, updatePostDto: UpdatePostDto) {
+    return this.postsRepository.updatePost(id, updatePostDto);
+  }
+
+  deletePost(id: string) {
+    return this.postsRepository.deletePost(id);
   }
 }
