@@ -78,28 +78,28 @@ async findPostsByAuthor(username: string): Promise<Post[]> {
 
   async createPost(createPostDto: CreatePostDto): Promise<Post> {
     const { username, title, content } = createPostDto;
-
+  
     // Verifica si el usuario ya existe
     let user = await this.usersRepository.findOne({ where: { username } });
     if (!user) {
-        // Si no existe, crea un nuevo usuario
-        user = this.usersRepository.create({ username });
-        await this.usersRepository.save(user);
+      // Si no existe, crea un nuevo usuario
+      user = this.usersRepository.create({ username });
+      await this.usersRepository.save(user);
     }
-
+  
     // Crea el post con el username directamente en el post
     const newPost = this.postsRepository.create({
-        title,
-        content,
-        username, 
-        author: user 
+      title,
+      content,
+      username, // Se asigna el username directamente al post
+      author: user // Se asigna el usuario encontrado o creado como autor del post
     });
-
+  
     await this.postsRepository.save(newPost);
     return newPost;
-}
-
+  }
   
+
 
   async updatePost(id: string, updatePostDto: UpdatePostDto): Promise<Post> {
     const post = await this.getPostById(id);
