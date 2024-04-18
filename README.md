@@ -1,83 +1,33 @@
-Frontend for NestJS CRUD Blog (Abraham Santos Torres)
-Este proyecto es el frontend de una aplicación de blog que, junto con su backend correspondiente, permite realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) desde la perspectiva de un administrador o superusuario.
+Backend for NestJS CRUD Blog (Abraham Santos Torres) Este proyecto es el backend de una aplicación de blog que permite realizar operaciones CRUD (Crear, Leer, Actualizar, Borrar) desde la perspectiva de un administrador o superusuario.
 
-Tecnologías Utilizadas:
-HTML
-CSS
-JavaScript
-Bootstrap para el diseño
-Node.js y Express para el servidor de proxy
-
-
-Requisitos Previos
-Antes de iniciar, asegúrate de tener instalado Node.js (que incluye npm) en tu sistema. También necesitas tener el backend corriendo para que el frontend funcione correctamente.
+Tecnologías Utilizadas Node.js NestJS TypeORM PostgreSQL Requisitos Previos Antes de iniciar, asegúrate de tener instalado Node.js (que incluye npm) y PostgreSQL en tu sistema.
 
 Configuración del Proyecto
-Clonar el Repositorio
-Para obtener el proyecto, clona el repositorio desde GitHub:
 
-git clone https://github.com/abrahamsantos-developer/front-nestjs-crud-blog.git
-cd front-nestjs-crud-blog
+Clonar el Repositorio Para obtener el proyecto, clona el repositorio desde GitHub: git clone https://github.com/abrahamsantos-developer/back-nestjs-crud-blog.git cd back-nestjs-crud-blog
 
+Instalación de Dependencias Instala las dependencias necesarias ejecutando: npm install
 
-Instalación de Dependencias
-Instala las dependencias necesarias ejecutando:
+Configuración de la Base de Datos Deberás crear una base de datos PostgreSQL antes de iniciar la aplicación y asegurarte de que las credenciales de conexión coincidan con las configuradas en tu archivo .env.
 
-npm install
+Ejemplo de configuración de la base de datos:
 
+DB_HOST: localhost DB_PORT: 5432 DB_USERNAME: example_user DB_PASSWORD: example_password DB_DATABASE: example_db
 
-Configuración del Servidor de Proxy
-El servidor de proxy está configurado para redirigir las solicitudes a la API del backend. Aquí está cómo está configurado en server.js:
+Archivo .env Copia el archivo dotenv.example a un nuevo archivo llamado .env y actualiza las variables según tu entorno local:
 
-//server.js
-import express from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import path from 'path';
-import { fileURLToPath } from 'url';
+plaintext Copy code DB_HOST=localhost DB_PORT=5432 DB_USERNAME=example_user DB_PASSWORD=example_password DB_DATABASE=example_db PORT=5500 FRONTEND_URL='http://localhost:3000'
 
-const app = express();
-const port = 3000;
+Ejecutar la Aplicación Para iniciar la aplicación en modo de desarrollo, usa:
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+npm run start:dev
 
-app.use('/api', createProxyMiddleware({
-    target: 'http://localhost:5500', // Apunta al backend de NestJS
-    changeOrigin: true,
-    pathRewrite: { '^/api': '' },
-}));
+Para ejecutar la aplicación en modo de producción, puedes usar:
 
-app.use(express.static(path.join(__dirname, 'public')));
+npm run start:prod Características
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+CRUD Completo: Crea, lee, actualiza y elimina posts. Búsqueda Avanzada: Filtra posts por autor, título o contenido.
 
-app.listen(port, () => {
-    console.log(`Proxy server running on http://localhost:${port}`);
-});
+Futuras Mejoras Implementacion de ValidationPipes. Mejorar la interfaz a un diseño más avanzado. Implementar autenticación con JWT. Establecer propietarios (usuarios) de posts para definir permisos de edición y borrado. Por el momento suponemos que esta siendo usado por un Admin o superusuario con permiso absoluto.
 
-
-
-Ejecutar la Aplicación
-Para iniciar el servidor de proxy y el frontend, usa:
-
-npm start
-
-Asegúrate de tener el Backend ejecutándose en http://localhost:5500 antes de iniciar el frontend.
-
-El frontend estará accesible en: URL del Frontend: http://localhost:3000
-
-Características
-CRUD Completo: Interfaz para crear, leer, actualizar y eliminar posts.
-Búsqueda Avanzada: Filtra posts por autor, título o contenido.
-
-
-Futuras Mejoras
-Implementacion de ValidationPipes.
-Mejorar la interfaz a un diseño más avanzado.
-Implementar autenticación con JWT.
-Establecer propietarios (usuarios) de posts para definir permisos de edición y borrado.
-
-
-Contribuciones
-Las contribuciones son bienvenidas. Si tienes mejoras o correcciones, por favor considera enviar un pull request.
+Contribuciones Las contribuciones son bienvenidas. Si tienes mejoras o correcciones, por favor considera enviar un pull request.
