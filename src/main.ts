@@ -6,6 +6,7 @@ dotenv.config();
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,6 +22,14 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Metodos
     allowedHeaders: 'Content-Type, Accept',  // Headers
   });
+
+  // Config pipes de validación
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,            // elimina propiedades que no esta decoradas con validador
+  transform: true,            // transformapayloads a instancias de DTO
+  forbidNonWhitelisted: false, // bloquea la solicitud si contiene propiedades no permitidas
+  disableErrorMessages: false // es opcional. oculta mensajes de error en producción
+}));
 
   //Swagger doc
   const config = new DocumentBuilder()
