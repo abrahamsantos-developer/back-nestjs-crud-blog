@@ -41,13 +41,11 @@ getPostsByAuthor(@Param('username') username: string) {
   }
 
   @Post()
-  //@UsePipes(new ValidationPipe({ transform: true }))
   createPost(@Body() createPostDto: CreatePostDto) {
     return this.postsService.createPost(createPostDto);
   }
 
   @Put(':id')
-  //@UsePipes(new ValidationPipe({ transform: true }))
   updatePost(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postsService.updatePost(id, updatePostDto);
   }
