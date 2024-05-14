@@ -54,15 +54,16 @@ export class PostsRepository {
     return this.usersRepository.save(newUser);
   }
 
-  createPost(title: string, content: string, user: User): Promise<Post> {
-    const newPost = this.postsRepository.create({
-      title,
-      content,
-      username: user.username,
-      author: user
-    });
-    return this.postsRepository.save(newPost);
-  }
+  
+async createPost(createPostDto: CreatePostDto, user: User): Promise<Post> {
+  const newPost = this.postsRepository.create({
+      title: createPostDto.title,
+      content: createPostDto.content,
+      username: user.username, // If you want to store the username directly in the post
+      author: user // This sets up the relationship correctly if you have a relational column
+  });
+  return this.postsRepository.save(newPost);
+}
 
   async updatePost(post: Post, updateData: UpdatePostDto): Promise<Post> {
     Object.assign(post, updateData);

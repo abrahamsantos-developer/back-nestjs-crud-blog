@@ -51,18 +51,19 @@ export class PostsService {
     }
   }
 
-  async createPost(createPostDto: CreatePostDto) {
-    try {
-      const { username, title, content } = createPostDto;
-      let user = await this.postsRepository.findUserByUsername(username);
+  // In your PostsService
+async createPost(createPostDto: CreatePostDto) {
+  try {
+      let user = await this.postsRepository.findUserByUsername(createPostDto.username);
       if (!user) {
-        user = await this.postsRepository.createUser(username);
+          user = await this.postsRepository.createUser(createPostDto.username);
       }
-      return await this.postsRepository.createPost(title, content, user);
-    } catch (error) {
+      return await this.postsRepository.createPost(createPostDto, user);
+  } catch (error) {
       throw new NotFoundException('Error creando post');
-    }
   }
+}
+
 
   async updatePost(id: string, updatePostDto: UpdatePostDto) {
     try {
