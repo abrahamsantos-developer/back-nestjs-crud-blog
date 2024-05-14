@@ -21,7 +21,7 @@ export class Post {
   @Column('text')
   content: string;
 
-  //esto se va a normalizar aun
+  //normalize this.
   @Column({nullable: true})  
   username: string;
 
