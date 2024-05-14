@@ -59,8 +59,8 @@ async createPost(createPostDto: CreatePostDto, user: User): Promise<Post> {
   const newPost = this.postsRepository.create({
       title: createPostDto.title,
       content: createPostDto.content,
-      username: user.username, // If you want to store the username directly in the post
-      author: user // This sets up the relationship correctly if you have a relational column
+      username: user.username, 
+      author: user 
   });
   return this.postsRepository.save(newPost);
 }
