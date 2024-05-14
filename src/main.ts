@@ -9,6 +9,13 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+   //loggea todas las requests entrantes
+   app.use((req, res, next) => {
+    console.log(`Incoming request: ${req.method} ${req.path}`);
+    next();
+  });
+
   app.enableCors({
     origin: process.env.FRONTEND_URL,  //especifica Origen del frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',  // Metodos
