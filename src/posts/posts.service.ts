@@ -8,47 +8,79 @@ export class PostsService {
   constructor(private postsRepository: PostsRepository) {}
 
   async getAllPosts() {
-    return await this.postsRepository.findAllPosts();
+    try {
+      return await this.postsRepository.findAllPosts();
+    } catch (error) {
+      throw new NotFoundException('Error buscando todos los posts');
+    }
   }
   
   async getPostsByAuthor(username: string) {
-    return await this.postsRepository.findPostsByAuthor(username);
+    try {
+      return await this.postsRepository.findPostsByAuthor(username);
+    } catch (error) {
+      throw new NotFoundException('Error buscando posts por autor');
+    }
   }
 
   async getPostsByTitle(title: string) {
-    return await this.postsRepository.findPostsByTitle(title);
+    try {
+      return await this.postsRepository.findPostsByTitle(title);
+    } catch (error) {
+      throw new NotFoundException('Error buscando posts por titulo');
+    }
   }
 
   async getPostsByContent(content: string) {
-    return await this.postsRepository.findPostsByContent(content);
+    try {
+      return await this.postsRepository.findPostsByContent(content);
+    } catch (error) {
+      throw new NotFoundException('Error buscando posts por contenido');
+    }
   }
 
   async getPostById(id: string) {
-    const post = await this.postsRepository.getPostById(id);
-    if (!post) {
-      throw new NotFoundException(`Post no encontrado`);
+    try {
+      const post = await this.postsRepository.getPostById(id);
+      if (!post) {
+        throw new NotFoundException(`Post no encontrado`);
+      }
+      return post;
+    } catch (error) {
+      throw new NotFoundException('Error encontrando post');
     }
-    return post;
   }
 
   async createPost(createPostDto: CreatePostDto) {
-    const { username, title, content } = createPostDto;
-    let user = await this.postsRepository.findUserByUsername(username);
-    if (!user) {
-      user = await this.postsRepository.createUser(username);
+    try {
+      const { username, title, content } = createPostDto;
+      let user = await this.postsRepository.findUserByUsername(username);
+      if (!user) {
+        user = await this.postsRepository.createUser(username);
+      }
+      return await this.postsRepository.createPost(title, content, user);
+    } catch (error) {
+      throw new NotFoundException('Error creando post');
     }
-    return await this.postsRepository.createPost(title, content, user);
   }
 
   async updatePost(id: string, updatePostDto: UpdatePostDto) {
-    const post = await this.getPostById(id);
-    return await this.postsRepository.updatePost(post, updatePostDto);
+    try {
+      const post = await this.getPostById(id);
+      return await this.postsRepository.updatePost(post, updatePostDto);
+    } catch (error) {
+      throw new NotFoundException('Error actualizando post');
+    }
   }
 
   async deletePost(id: string) {
-    const result = await this.postsRepository.deletePost(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Post no encontrado`);
+    try {
+      const result = await this.postsRepository.deletePost(id);
+      if (result.affected === 0) {
+        throw new NotFoundException(`Post no encontrado`);
+      }
+    } catch (error) {
+      throw new NotFoundException('Error borrando post');
     }
   }
 }
