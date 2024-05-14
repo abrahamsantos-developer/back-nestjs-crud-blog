@@ -1,46 +1,54 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, } from '@nestjs/common';
 import { PostsRepository } from './posts.repository';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostsService {
-  constructor(private /*readonly*/ postsRepository: PostsRepository) {}
+  constructor(private postsRepository: PostsRepository) {}
 
-  getAllPosts() {
-    return this.postsRepository.findAllPosts();
+  async getAllPosts() {
+    return await this.postsRepository.findAllPosts();
   }
   
-  //se implementara despues
-  // getPostsByAuthorId(authorId: string) {
-  //   return this.postsRepository.findPostsByAuthorId(authorId);
-  // }
-
-  getPostsByAuthor(username: string) {
-    return this.postsRepository.findPostsByAuthor(username);
-}
-
-  getPostsByTitle(title: string) {
-    return this.postsRepository.findPostsByTitle(title);
+  async getPostsByAuthor(username: string) {
+    return await this.postsRepository.findPostsByAuthor(username);
   }
 
-  getPostsByContent(content: string) {
-    return this.postsRepository.findPostsByContent(content);
+  async getPostsByTitle(title: string) {
+    return await this.postsRepository.findPostsByTitle(title);
   }
 
-  getPostById(id: string) {
-    return this.postsRepository.getPostById(id);
+  async getPostsByContent(content: string) {
+    return await this.postsRepository.findPostsByContent(content);
   }
 
-  createPost(createPostDto: CreatePostDto) {
-    return this.postsRepository.createPost(createPostDto);
+  async getPostById(id: string) {
+    const post = await this.postsRepository.getPostById(id);
+    if (!post) {
+      throw new NotFoundException(`Post no encontrado`);
+    }
+    return post;
   }
 
-  updatePost(id: string, updatePostDto: UpdatePostDto) {
-    return this.postsRepository.updatePost(id, updatePostDto);
+  async createPost(createPostDto: CreatePostDto) {
+    const { username, title, content } = createPostDto;
+    let user = await this.postsRepository.findUserByUsername(username);
+    if (!user) {
+      user = await this.postsRepository.createUser(username);
+    }
+    return await this.postsRepository.createPost(title, content, user);
   }
 
-  deletePost(id: string) {
-    return this.postsRepository.deletePost(id);
+  async updatePost(id: string, updatePostDto: UpdatePostDto) {
+    const post = await this.getPostById(id);
+    return await this.postsRepository.updatePost(post, updatePostDto);
+  }
+
+  async deletePost(id: string) {
+    const result = await this.postsRepository.deletePost(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Post no encontrado`);
+    }
   }
 }
